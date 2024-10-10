@@ -1,0 +1,17 @@
+<h1>Listes</h1>
+<ul id="lists">
+    {% for list in lists %}
+    {% include 'list-inline.html' %}
+    {% endfor %}
+</ul>
+
+<div>
+    <h2>Nouvelle liste</h2>
+    <form hx-post="/lists/" hx-target="#lists" hx-swap="beforeend">
+        <label for="name">Nom</label>
+        <input type="text" name="name" id="name" required>
+        <label for="description">Description</label>
+        <input type="text" name="description" id="description" required>
+        <input type="submit" value="Créer">
+    </form>
+</div>

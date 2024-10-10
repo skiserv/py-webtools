@@ -1,0 +1,3 @@
+<li hx-get="/lists/{{ list.id }}" hx-target="#main">
+    {{ "🗃️" if list.closed }} {{ list.name }} : {{ list.description }}
+</li>

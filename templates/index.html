@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="/static/htmx.min.js"></script>
+    <link rel="stylesheet" href="/static/main.css">
+</head>
+
+<body>
+    <header>
+        <a href="/">Webtools</a>
+    </header>
+    <nav>
+        <a hx-get="/lists/" hx-target="#main">Listes</a>
+        <a hx-get="/notes" hx-target="#main">Notes</a>
+    </nav>
+
+    <main id="main">
+    </main>
+
+</body>
+
+</html>

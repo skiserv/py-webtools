@@ -1,0 +1,12 @@
+<h1>{{ "🗃️" if list.closed }} {{ list.name }}</h1>
+<p>{{ list.description }}</p>
+
+<ul id="items">
+    {% for item in list.items %}
+    {% include 'list-item.html' %}
+    {% endfor %}
+</ul>
+<form hx-post="/lists/{{ list.id }}/items" hx-target="#items" hx-swap="beforeend">
+    <input type="text" name="content" id="content">
+    <input type="submit" value="Ajouter">
+</form>
