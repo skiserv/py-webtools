@@ -35,7 +35,7 @@ async def lists(request: Request, session: Session = Depends(get_session)):
     stmt = select(List)
     lists = session.exec(stmt)
     return templates.TemplateResponse(
-        request=request, name="lists.html", context={"lists": lists}
+        request=request, name="lists/lists.html", context={"lists": lists}
     )
 
 
@@ -51,7 +51,7 @@ async def create_list(
     session.commit()
     session.refresh(new_list)
     return templates.TemplateResponse(
-        request=request, name="list-inline.html", context={"list": new_list}
+        request=request, name="lists/list-inline.html", context={"list": new_list}
     )
 
 
@@ -62,7 +62,7 @@ async def list(
     session: Session = Depends(get_session),
 ):
     return templates.TemplateResponse(
-        request=request, name="list.html", context={"list": session.get(List, list_id)}
+        request=request, name="lists/list.html", context={"list": session.get(List, list_id)}
     )
 
 
@@ -78,7 +78,7 @@ async def create_item(
     session.commit()
     session.refresh(item)
     return templates.TemplateResponse(
-        request=request, name="list-item.html", context={"item": item}
+        request=request, name="lists/list-item.html", context={"item": item}
     )
 
 

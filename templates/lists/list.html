@@ -3,7 +3,7 @@
 
 <ul id="items">
     {% for item in list.items %}
-    {% include 'list-item.html' %}
+    {% include 'lists/list-item.html' %}
     {% endfor %}
 </ul>
 <form hx-post="/lists/{{ list.id }}/items" hx-target="#items" hx-swap="beforeend">
