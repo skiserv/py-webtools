@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pywebtools.models.listitem import ListItem
+from pywebtools.models.note import Note
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 from pywebtools.models.list import List
 from uuid import UUID
@@ -10,7 +11,10 @@ from uuid import UUID
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(
+    directory="templates",
+    extensions={"jinja_markdown.MarkdownExtension"},
+)
 
 engine = create_engine("sqlite:///data.db")
 
@@ -75,4 +79,28 @@ async def create_item(
     session.refresh(item)
     return templates.TemplateResponse(
         request=request, name="list-item.html", context={"item": item}
+    )
+
+
+@app.get("/notes/", response_class=HTMLResponse)
+async def notes(request: Request, session: Session = Depends(get_session)):
+    stmt = select(Note)
+    notes = session.exec(stmt)
+    return templates.TemplateResponse(
+        request=request, name="notes/notes.html", context={"notes": notes}
+    )
+
+
+@app.post("/notes/", response_class=HTMLResponse)
+async def create_note(
+    request: Request,
+    session: Session = Depends(get_session),
+    name: str = Form(),
+    content: str = Form(),
+):
+    note = Note(name=name, content=content)
+    session.add(note)
+    session.commit()
+    return templates.TemplateResponse(
+        request=request, name="notes/note.html", context={"note": note}
     )
