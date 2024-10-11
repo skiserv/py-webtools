@@ -1,0 +1,12 @@
+<article id="note-{{ note.id }}"></article>
+<h2>✏️ Modification de {{ note.name }}</h2>
+<form hx-patch="/notes/{{ note.id }}" hx-target="#note-{{ note.id }}">
+    <label for="name">Nom</label>
+    <input type="text" name="name" id="name" value="{{ note.name }}" required>
+    <label for="content">Contenu</label>
+    <textarea name="content" id="content" required>
+        {{ note.content }}
+    </textarea>
+    <input type="submit" value="Sauvegarder">
+</form>
+</article>

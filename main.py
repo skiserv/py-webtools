@@ -104,3 +104,31 @@ async def create_note(
     return templates.TemplateResponse(
         request=request, name="notes/note.html", context={"note": note}
     )
+
+
+@app.patch("/notes/{note_id}", response_class=HTMLResponse)
+async def edit_note(
+    note_id: UUID,
+    request: Request,
+    name: str = Form(),
+    content: str = Form(),
+    session: Session = Depends(get_session),
+):
+    note = session.get(Note, note_id)
+    note.name = name
+    note.content = content
+    session.add(note)
+    session.commit()
+    return templates.TemplateResponse(
+        request=request, name="notes/note.html", context={"note": note}
+    )
+
+
+@app.get("/notes/{note_id}/edit", response_class=HTMLResponse)
+async def edit_form(
+    note_id: UUID, request: Request, session: Session = Depends(get_session)
+):
+    note = session.get(Note, note_id)
+    return templates.TemplateResponse(
+        request=request, name="notes/note-edit.html", context={"note": note}
+    )

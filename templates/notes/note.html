@@ -1,8 +1,11 @@
-<article>
+<article id="note-{{ note.id }}">
     <h2>{{ note.name }}</h2>
     <div>
         {% markdown %}
         {{ note.content }}
         {% endmarkdown %}
     </div>
+    <button hx-get="/notes/{{ note.id }}/edit" hx-target="#note-{{ note.id }}">
+        ✏️ Modifier
+    </button>
 </article>
