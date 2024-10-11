@@ -5,6 +5,7 @@ from fastapi.templating import Jinja2Templates
 from pywebtools.models.listitem import ListItem
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 from pywebtools.models.list import List
+from uuid import UUID
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -53,7 +54,7 @@ async def create_list(
 @app.get("/lists/{list_id}", response_class=HTMLResponse)
 async def list(
     request: Request,
-    list_id: int,
+    list_id: UUID,
     session: Session = Depends(get_session),
 ):
     return templates.TemplateResponse(
@@ -64,7 +65,7 @@ async def list(
 @app.post("/lists/{list_id}/items", response_class=HTMLResponse)
 async def create_item(
     request: Request,
-    list_id: int,
+    list_id: UUID,
     session: Session = Depends(get_session),
     content: str = Form(),
 ):
