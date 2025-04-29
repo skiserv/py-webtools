@@ -1,77 +1,41 @@
 from uuid import UUID
 
-from fastapi import (
-    APIRouter,
-    Depends,
-    HTTPException,
-    FastAPI,
-    Request,
-    Form,
-    Depends,
-    Path,
-)
-from fastapi.responses import HTMLResponse
+from flask import Blueprint, render_template, request
 from sqlmodel import Session, select
 
-from pywebtools.db import get_session
+from pywebtools.db import session
 from pywebtools.models.note import Note
-from pywebtools.templating import templates
 
 
-router = APIRouter(
-    prefix="/notes",
-    tags=["notes"],
-    dependencies=[],
-)
+notes_router = Blueprint("notes", __name__)
 
 
-@router.get("/", response_class=HTMLResponse)
-async def notes(request: Request, session: Session = Depends(get_session)):
+@notes_router.get("/")
+def notes():
     stmt = select(Note)
     notes = session.exec(stmt)
-    return templates.TemplateResponse(
-        request=request, name="notes/notes.html", context={"notes": notes}
-    )
+    return render_template("notes/notes.html", notes=notes)
 
 
-@router.post("/", response_class=HTMLResponse)
-async def create_note(
-    request: Request,
-    session: Session = Depends(get_session),
-    name: str = Form(),
-    content: str = Form(),
-):
-    note = Note(name=name, content=content)
+@notes_router.post("/")
+def create_note():
+    note = Note(name=request.form["name"], content=request.form["content"])
     session.add(note)
     session.commit()
-    return templates.TemplateResponse(
-        request=request, name="notes/note.html", context={"note": note}
-    )
+    return render_template("notes/note.html", note=note)
 
 
-@router.patch("/{note_id}", response_class=HTMLResponse)
-async def edit_note(
-    note_id: UUID,
-    request: Request,
-    name: str = Form(),
-    content: str = Form(),
-    session: Session = Depends(get_session),
-):
+@notes_router.patch("/<uuid:note_id>")
+def edit_note(note_id: str):
     note = session.get(Note, note_id)
-    note.name = name
-    note.content = content
+    note.name = request.form["name"]
+    note.content = request.form["content"]
     session.add(note)
     session.commit()
-    return templates.TemplateResponse(
-        request=request, name="notes/note.html", context={"note": note}
-    )
+    return render_template("notes/note.html", note=note)
 
 
-@router.get("/{note_id}/edit", response_class=HTMLResponse)
-async def edit_form(
-    note_id: UUID, request: Request, session: Session = Depends(get_session)
-):
+@notes_router.get("/<uuid:note_id>/edit")
+def edit_form(note_id: UUID):
     note = session.get(Note, note_id)
-    return templates.TemplateResponse(
-        request=request, name="notes/note-edit.html", context={"note": note}
-    )
+    return render_template("notes/note-edit.html", note=note)

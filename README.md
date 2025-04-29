@@ -1,9 +1,9 @@
 # Py-Webtools
 
 ## Dev
-Run `fastapi dev main.py`
+Run `python3 -m flask --app main.py run --debug`
 
 ## Help
- - https://fastapi.tiangolo.com
+ - https://flask.palletsprojects.com
  - https://sqlmodel.tiangolo.com
  - https://htmx.org/

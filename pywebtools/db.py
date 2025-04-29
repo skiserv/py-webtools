@@ -1,9 +1,5 @@
-from sqlmodel import Session, create_engine
+from sqlalchemy import create_engine
+from sqlmodel import Session
 
-
-engine = create_engine("sqlite:///data.db")
-
-
-def get_session():
-    with Session(engine) as session:
-        yield session
+engine = create_engine("sqlite:///data.db", echo=True)
+session = Session(engine)

@@ -1,16 +1,21 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
+from flask import Flask
+from flask import render_template
+from sqlmodel import SQLModel
+from sqlmodel import select
 
-from pywebtools.routers import notes, lists
-from pywebtools.templating import templates
+from pywebtools.models.note import Note
+from pywebtools.db import session
 
-app = FastAPI()
-app.include_router(notes.router)
-app.include_router(lists.router)
-app.mount("/static", StaticFiles(directory="static"), name="static")
+from pywebtools.routers.notes import notes_router
+from pywebtools.routers.lists import lists_router
 
 
-@app.get("/", response_class=HTMLResponse)
-async def index(request: Request):
-    return templates.TemplateResponse(request=request, name="index.html")
+app = Flask(__name__)
+app.jinja_env.add_extension("jinja_markdown.MarkdownExtension")
+app.register_blueprint(notes_router, url_prefix="/notes")
+app.register_blueprint(lists_router, url_prefix="/lists")
+
+
+@app.get("/")
+def index():
+    return render_template("index.html")
