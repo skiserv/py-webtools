@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, abort
 from sqlmodel import Session, select
 
 from pywebtools.db import session
@@ -28,6 +28,8 @@ def create_note():
 @notes_router.patch("/<uuid:note_id>")
 def edit_note(note_id: str):
     note = session.get(Note, note_id)
+    if not note:
+        abort(404)
     note.name = request.form["name"]
     note.content = request.form["content"]
     session.add(note)
@@ -38,4 +40,6 @@ def edit_note(note_id: str):
 @notes_router.get("/<uuid:note_id>/edit")
 def edit_form(note_id: UUID):
     note = session.get(Note, note_id)
+    if not note:
+        abort(404)
     return render_template("notes/note-edit.html", note=note)

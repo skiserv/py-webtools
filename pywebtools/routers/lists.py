@@ -28,18 +28,19 @@ def create_list():
 
 
 @lists_router.get("/<uuid:list_id>")
-def list():
-    return render_template(
-        "lists/list.html",
-        list=session.get(List, list_id),
-    )
+def list(list_id: UUID):
+    l = session.get(List, list_id)
+    if not l:
+        abort(404)
+    return render_template("lists/list.html", list=l)
 
 
-@lists_router.post("/<list_id>/items")
-def create_item():
-    item = ListItem(
-        content=request.form["content"], list_id=session.get(List, list_id).id
-    )
+@lists_router.post("/<uuid:list_id>/items")
+def create_item(list_id: UUID):
+    l = session.get(List, list_id)
+    if not l:
+        abort(404)
+    item = ListItem(content=request.form["content"], list_id=l.id)
     session.add(item)
     session.commit()
     session.refresh(item)
