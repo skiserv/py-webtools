@@ -1,1 +1,5 @@
-<li>{{ item.content }}</li>
+<li>
+    <button hx-delete="/lists/{{ item.list_id }}/items/{{ item.id }}" hx-target="closest li"
+        hx-swap="outerHTML">🗑️</button>
+    {{ item.content }}
+</li>

@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, abort
 from sqlmodel import Session, select
 
 from pywebtools.db import session
@@ -44,3 +44,13 @@ def create_item():
     session.commit()
     session.refresh(item)
     return render_template("lists/list-item.html", item=item)
+
+
+@lists_router.delete("/<uuid:list_id>/items/<uuid:item_id>")
+def delete_item(list_id: UUID, item_id:UUID):
+    item = session.get(ListItem, item_id)
+    if not item or item.list_id != list_id:
+        abort(404)
+    session.delete(item)
+    session.commit()
+    return ""
